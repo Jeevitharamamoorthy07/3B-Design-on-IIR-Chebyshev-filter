@@ -10,10 +10,54 @@
 PC installed with SCILAB. 
 
 # PROGRAM: 
+```
+clc;
+close;
+wp=input('Enter the pass band frequency (Radians)=');
+ws=input('Enter the stop band frequency (Radians)=');
+alphap=input('Enter the pass band attenuation (dB)=');
+alphas=input('Enter the stop band attenuation (dB)=');
+T=input('Enter the Value Of Sampling Time=');
+omegap=(2/T)*tan(wp/2);
+disp(omegap,'omegap=');
+omegas=(2/T)*tan(ws/2);
+disp(omegas,'omegas=');
+N=acosh(sqrt(((10^(0.1*alphas))-1)/((10^(0.1*alphap))-1)))/(acosh(omegas/omegap));
+disp(N,'N=');
+N=ceil(N);
+disp(N,'Round off value of N=');
+omegac=omegap/(((10^(0.1*alphap))-1)^(1/(2*N)));
+disp(omegac,'omegac=');
+Epsilon=sqrt((10^(0.1*alphap))-1);
+disp(Epsilon,'Epsilon=');
+[pols,gn]=zpch1(N,Epsilon,omegap);
+disp(gn,'Gain');
+disp(pols,'Pols');
+hs=poly(gn,'s','coeff')/real(poly(pols,'s'));
+disp(hs,'Analog Low pass chebyshev filtertransfer function');
+z=poly(0,'z');
+Hz=horner(hs,(2/T)*((z-1)/(z+1)))
+disp(Hz,'Digital LPF Transfor function H(Z)=');
+HW=frmag(Hz,512);
+w=0:%pi/511:%pi;
+plot(w/%pi,abs(HW));
+xlabel('Normalized Digital Frequency w');
+ylabel('Magnitude');
+title('Frequency Response of Chebyshev IIR LPF');
+```
+# CALCULATION:
+
+<img width="949" height="1600" alt="image" src="https://github.com/user-attachments/assets/d5bcce1d-8614-4ad5-9ab5-7c355d905874" />
+
+
+<img width="1066" height="1600" alt="image" src="https://github.com/user-attachments/assets/5f9d7bb2-a853-4de3-af63-45b7f59d7805" />
+
+<img width="1600" height="634" alt="image" src="https://github.com/user-attachments/assets/1e376d83-9958-4b79-a04c-db4ff4e9a11d" />
 
 
 # OUTPUT: 
 
+<img width="1369" height="828" alt="image" src="https://github.com/user-attachments/assets/93acd0c1-6e94-4ee6-911a-ab26b7929afb" />
 
 # RESULT: 
 Thus design of Chebyshev Low pass IIR filter waveforms were plotted and output was
